@@ -7,7 +7,7 @@ pub enum WithdrawError {
     Balance(f64)
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Wallet {
     currency: String,
     balance: f64,

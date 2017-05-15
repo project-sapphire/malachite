@@ -82,7 +82,8 @@ fn main() {
 
                         log_balance(&wallets);
                     },
-                    _ => panic!("unimplemented")
+                    prism::WalletQuery::Currencies => wallets.keys().map(|x|x.clone()).collect::<Vec<String>>().send(&requests, 0).unwrap(),
+                    prism::WalletQuery::Balance => get_or_insert_wallet(&mut wallets, &request.currency).get_balance().send(&requests, 0).unwrap(),
                 };
             },
             x => {
