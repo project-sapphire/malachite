@@ -15,7 +15,7 @@ use wallet::{Wallet, WithdrawError};
 
 type WalletCollection = HashMap<String, Wallet>;
 
-fn log_balance(wallets: &HashMap<String, Wallet>) {
+fn log_balance(wallets: &WalletCollection) {
     for (_, ref wallet) in wallets {
         info!("- {}: {} {}", wallet.get_address(), wallet.get_currency().to_uppercase(), wallet.get_balance());
     }
@@ -73,11 +73,15 @@ fn main() {
                         
                         // pay amount through secret backdoor
                         backdoor.send_str(&address, 0).unwrap();
+                        let resulting_currency = backdoor.recv_string(0).unwrap().unwrap();
                         let resulting_amount = f64::receive(&backdoor, 0).unwrap().unwrap();
-                        info!("Exchange resulted in ??? {}", resulting_amount);
+                        info!("Exchange resulted in {} {}", resulting_currency.to_lowercase(), resulting_amount);
+                        get_or_insert_wallet(&mut wallets, &resulting_currency).deposit(resulting_amount);
 
                         requests.send_str("ok", 0).unwrap();
-                    }
+
+                        log_balance(&wallets);
+                    },
                     _ => panic!("unimplemented")
                 };
             },
