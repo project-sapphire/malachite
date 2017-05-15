@@ -59,7 +59,7 @@ fn main() {
     loop {
         match prism::WalletRequest::receive(&requests, 0) {
             Ok(Some(request)) => {
-                info!("Received: {:?}", request);
+                debug!("Received: {:?}", request);
                 match request.query {
                     prism::WalletQuery::Receive => requests.send_str(&get_wallet_address(&mut wallets, &request.currency), 0).unwrap(),
                     prism::WalletQuery::Pay(amount, address) => {
